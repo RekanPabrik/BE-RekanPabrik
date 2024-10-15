@@ -132,3 +132,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+#Database Tamplate
+.sql
+DB_Tamplate.sql
