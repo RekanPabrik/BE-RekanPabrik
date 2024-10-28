@@ -9,15 +9,6 @@ const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
 const crypto = require("crypto");
 
-const getUserLoggedIn = async (req, res) => {
-  try {
-      const response = await pelamarModel.searchByID(req.id)
-      res.status(200).json({message: 'User found', data: response});
-  } catch (error) {
-      res.status(500).json({ message: error.message, data: null });
-  }
-};
-
 const getAllPerusahaan = async (req, res) => {
   try {
     const [data] = await perusahaanModel.getAllPerusahaan();
@@ -37,27 +28,6 @@ const getAllPerusahaan = async (req, res) => {
       massage: "error",
       serverMassage: error,
     });
-  }
-};
-
-const createAccountPerusahaan = async (req, res) => {
-  const { email, password, namaPerusahaan } = req.body;
-  const role = "perusahaan";
-
-  try {
-    const [cekPerusahaan] = await perusahaanModel.searchByEmail(email);
-
-    if (cekPerusahaan.length > 0) {
-      return res.status(400).json({
-        message: "email sudah terdaftar",
-        success: false,
-      });
-    }
-
-    await perusahaanModel.addPerusahaan(email, password, role, namaPerusahaan);
-    res.status(200).json({ message: "perusahaan registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -119,9 +89,7 @@ const cekPelamar = async (req, res) => {
 }
 
 module.exports = {
-  getUserLoggedIn,
   getAllPerusahaan,
-  createAccountPerusahaan,
   updateProfilePerusahaan,
   cekPelamar,
 };

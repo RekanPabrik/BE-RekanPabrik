@@ -28,6 +28,7 @@ const updateProfilePelamar = async (idPelamar, aboutMe, CV, dateBirth, profile_p
     return conn.execute(SQLQuery, [aboutMe, CV, dateBirth, profile_pict, idPelamar]);
 }
 
+
 module.exports = {
     getAllPelamar,
     addPelamar,

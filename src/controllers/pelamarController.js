@@ -8,14 +8,6 @@ const {
 const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
 
-const getUserLoggedIn = async (req, res) => {
-  try {
-      const response = await pelamarModel.searchByID(req.id)
-      res.status(200).json({message: 'User found', data: response});
-  } catch (error) {
-      res.status(500).json({ message: error.message, data: null });
-  }
-};
 
 const getAllPelamar = async (req, res) => {
   try {
@@ -38,27 +30,6 @@ const getAllPelamar = async (req, res) => {
     });
   }
 };
-
-const createAccountPelamar = async (req, res) => {
-  const {email, password, first_name, last_name} = req.body;
-  const role = "pelamar";
-  
-  try {
-    const [cekUser] = await pelamarModel.searchByEmail(email);
-    
-    if (cekUser.length > 0) {
-      return res.status(400).json({
-        message: "email sudah terdaftar",
-        success: false,
-      });
-    }
-
-    await pelamarModel.addPelamar(email, password, role, first_name, last_name);
-    res.status(200).json({ message: "User registered successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-}
 
 const updateProfilePelamar = async (req, res) => {
   const { idPelamar, aboutMe, dateBirth } = req.body;
@@ -122,8 +93,6 @@ const updateProfilePelamar = async (req, res) => {
 
 
 module.exports = {
-  getUserLoggedIn,
   getAllPelamar,
-  createAccountPelamar,
   updateProfilePelamar
 };

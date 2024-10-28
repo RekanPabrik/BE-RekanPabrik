@@ -1,5 +1,10 @@
 const conn = require('../config/db_connection')
 
+const getAllPost = () => {
+    const SQLQuery = "SELECT * FROM posting_pekerjaan"
+    return conn.execute(SQLQuery)
+}
+
 const getAllPostByIDPerusahaan = (idPerusahaan) => {
     const SQLQuery = "SELECT * FROM posting_pekerjaan WHERE id_perusahaan = ?"
     return conn.execute(SQLQuery, [idPerusahaan])
@@ -22,6 +27,7 @@ const editStatusPostingan = (idPostingan, status) => {
 
 module.exports = {
     getAllPostByIDPerusahaan,
+    getAllPost,
     addPostPekerjaan,
     deletePostingan,
     editStatusPostingan,
