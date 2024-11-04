@@ -46,7 +46,7 @@ const login = async (req, res) => {
 
     const [perusahaanRows] = await perusahaanModel.searchByEmail(email);
     if (perusahaanRows.length > 0) {
-      const perusahaan = pelamarRows[0];
+      const perusahaan = perusahaanRows[0];
       const match = await bcrypt.compare(password, perusahaan.password);
       if (match) {
         const token = jwt.sign(

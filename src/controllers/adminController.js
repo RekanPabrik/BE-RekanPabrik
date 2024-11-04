@@ -54,7 +54,30 @@ const countUser = async (req, res) => {
   }
 };
 
+const getAllAdmin = async (req, res) => {
+  try {
+    const [data] = await adminModel.getAllAdmin();
+
+    if (data.length > 0) {
+      res.json({
+        massage: "menampilkan data akun admin",
+        data: data,
+      });
+    } else {
+        res.json({
+            massage: "Tidak ada pelamar terdaftar"
+        })
+    }
+  } catch (error) {
+    res.status(500).json({
+      massage: "error",
+      serverMassage: error,
+    });
+  }
+};
+
 module.exports = {
   createAccountAdmin,
   countUser,
+  getAllAdmin
 };

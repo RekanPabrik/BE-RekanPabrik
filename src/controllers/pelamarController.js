@@ -80,7 +80,6 @@ const updateProfilePelamar = async (req, res) => {
       dateBirth,
       profilePictdownloadURL,
     };
-    console.log(RS)
 
     res.status(201).json({ 
       message: "Profile berhasil diperbarui.",
