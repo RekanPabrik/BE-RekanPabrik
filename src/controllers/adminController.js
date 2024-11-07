@@ -64,9 +64,9 @@ const getAllAdmin = async (req, res) => {
         data: data,
       });
     } else {
-        res.json({
-            massage: "Tidak ada pelamar terdaftar"
-        })
+      res.json({
+        massage: "Tidak ada pelamar terdaftar",
+      });
     }
   } catch (error) {
     res.status(500).json({
@@ -76,8 +76,25 @@ const getAllAdmin = async (req, res) => {
   }
 };
 
+const updateProfileAdmin = async (req, res) => {
+  const { id_admin, email, first_name, last_name } = req.body;
+  try {
+    await adminModel.updateProfileAdmin(email, first_name, last_name, id_admin);
+    res.status(201).json({
+      message: "Profile berhasil diperbarui.",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat memperbarui profil perusahaan.",
+      serverMessage: error.message,
+    });
+  }
+};
+
 module.exports = {
   createAccountAdmin,
   countUser,
-  getAllAdmin
+  getAllAdmin,
+  updateProfileAdmin,
 };
