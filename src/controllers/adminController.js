@@ -92,9 +92,24 @@ const updateProfileAdmin = async (req, res) => {
   }
 };
 
+const deleteAdminHandler = async (req, res) => {
+  const { id_admin } = req.body; 
+  try {
+      const result = await adminModel.deleteAdmin(id_admin); 
+      if (result[0].affectedRows === 0) {
+          return res.status(404).json({ message: "admin tidak ditemukan" });
+      }
+      res.status(200).json({ message: "admin berhasil dihapus" });
+  } catch (error) {
+      console.error("Error deleting admin:", error);
+      res.status(500).json({ message: "Terjadi kesalahan saat menghapus admin" });
+  }
+};
+
 module.exports = {
   createAccountAdmin,
   countUser,
   getAllAdmin,
   updateProfileAdmin,
+  deleteAdminHandler,
 };

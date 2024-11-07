@@ -90,8 +90,22 @@ const updateProfilePelamar = async (req, res) => {
   }
 };
 
+const deletePelamarHandler = async (req, res) => {
+  const { id_pelamar } = req.body; 
+  try {
+      const result = await pelamarModel.deletePelamar(id_pelamar); 
+      if (result[0].affectedRows === 0) {
+          return res.status(404).json({ message: "Pelamar tidak ditemukan" });
+      }
+      res.status(200).json({ message: "Pelamar berhasil dihapus" });
+  } catch (error) {
+      console.error("Error deleting pelamar:", error);
+      res.status(500).json({ message: "Terjadi kesalahan saat menghapus pelamar" });
+  }
+};
 
 module.exports = {
   getAllPelamar,
-  updateProfilePelamar
+  updateProfilePelamar,
+  deletePelamarHandler,
 };

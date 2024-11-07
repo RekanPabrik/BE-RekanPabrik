@@ -63,6 +63,11 @@ WHERE
   return conn.execute(SQLQuery, [idPerusahaan]);
 };
 
+const deletePerusahaan = async (id) => {
+  const SQLQuery = "DELETE FROM perusahaan WHERE id_perusahaan = ?";
+  return conn.execute(SQLQuery, [id]);
+};
+
 module.exports = {
   searchByID,
   getAllPerusahaan,
@@ -70,4 +75,5 @@ module.exports = {
   searchByEmail,
   updateProfilePerusahaan,
   cekPelamar,
+  deletePerusahaan,
 };

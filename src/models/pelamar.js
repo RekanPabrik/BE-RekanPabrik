@@ -28,11 +28,16 @@ const updateProfilePelamar = async (idPelamar, aboutMe, CV, dateBirth, profile_p
     return conn.execute(SQLQuery, [aboutMe, CV, dateBirth, profile_pict, idPelamar]);
 }
 
+const deletePelamar = async (id) => {
+    const SQLQuery = "DELETE FROM pelamar WHERE id_pelamar = ?";
+    return conn.execute(SQLQuery, [id]);
+};
 
 module.exports = {
     getAllPelamar,
     addPelamar,
     searchByEmail,
     updateProfilePelamar,
-    searchByID
+    searchByID,
+    deletePelamar
 }

@@ -36,10 +36,16 @@ const updateProfileAdmin = async (email, first_name, last_name, id_admin) => {
   return conn.execute(SQLQuery, [email, first_name, last_name, id_admin]);
 };
 
+const deleteAdmin = async (id) => {
+  const SQLQuery = "DELETE FROM admin WHERE id_admin = ?";
+  return conn.execute(SQLQuery, [id]);
+};
+
 module.exports = {
   searchByID,
   getAllAdmin,
   addAdmin,
   searchByEmail,
   updateProfileAdmin,
+  deleteAdmin,
 };

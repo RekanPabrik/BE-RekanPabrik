@@ -8,6 +8,7 @@ router.patch('/updateProfilePelamar', multer.fields([
     {name: 'CV', maxCount: 1},
     {name: 'profilePict', maxCount: 1},
 ]),pelamarController.updateProfilePelamar);
+router.delete('/deletePelamar', pelamarController.deletePelamarHandler);
 
 
 module.exports = router;

@@ -86,10 +86,26 @@ const cekPelamar = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
+
+const deletePerusahaanHandler = async (req, res) => {
+  const { id_perusahaan } = req.body; 
+  console.log(id_perusahaan)
+  try {
+      const result = await perusahaanModel.deletePerusahaan(id_perusahaan); 
+      if (result[0].affectedRows === 0) {
+          return res.status(404).json({ message: "perusahaan tidak ditemukan" });
+      }
+      res.status(200).json({ message: "perusahaan berhasil dihapus" });
+  } catch (error) {
+      console.error("Error deleting perusahaan:", error);
+      res.status(500).json({ message: "Terjadi kesalahan saat menghapus perusahaan" });
+  }
+};
 
 module.exports = {
   getAllPerusahaan,
   updateProfilePerusahaan,
   cekPelamar,
+  deletePerusahaanHandler
 };
