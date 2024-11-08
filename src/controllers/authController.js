@@ -7,6 +7,7 @@ const perusahaanModel = require("../models/perusahaan");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password)
 
   try {
     // cek tabel pelamar
