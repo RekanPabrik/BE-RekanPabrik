@@ -8,6 +8,7 @@ const getAllPostByIdPerusahaan = async (req, res) => {
         if (data.length > 0) {
             res.json({
                 message: `Menampilkan data postingan pekerjaan untuk perusahaan dengan ID ${idPerusahaan}`,
+                status: true,
                 data: data,
               });
         } else {

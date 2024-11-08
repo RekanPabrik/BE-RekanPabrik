@@ -24,15 +24,28 @@ const searchByID = async (id) => {
   return conn.execute(SQLQuery, [id]);
 };
 
-const updateProfilePerusahaan = async (
+const updateProfilePictPerusahaan = async (idPerusahaan, profilePict) => {
+  const SQLQuery =
+    "UPDATE perusahaan SET  profile_pict = ? WHERE id_perusahaan = ?";
+  return conn.execute(SQLQuery, [profilePict, idPerusahaan]);
+};
+
+const updateDataPerusahaan = async (
   idPerusahaan,
+  email,
+  nama_perusahaan,
   aboutMe,
-  profilePict,
   alamat
 ) => {
   const SQLQuery =
-    "UPDATE perusahaan SET about_me = ?, profile_pict = ?, alamat = ? WHERE id_perusahaan = ?";
-  return conn.execute(SQLQuery, [aboutMe, profilePict, alamat, idPerusahaan]);
+    "UPDATE perusahaan SET email = ?, nama_perusahaan = ?, about_me = ?, alamat = ? WHERE id_perusahaan = ?";
+  return conn.execute(SQLQuery, [
+    email,
+    nama_perusahaan,
+    aboutMe,
+    alamat,
+    idPerusahaan,
+  ]);
 };
 
 const cekPelamar = async (idPerusahaan) => {
@@ -73,7 +86,8 @@ module.exports = {
   getAllPerusahaan,
   addPerusahaan,
   searchByEmail,
-  updateProfilePerusahaan,
+  updateProfilePictPerusahaan,
   cekPelamar,
   deletePerusahaan,
+  updateDataPerusahaan,
 };

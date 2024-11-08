@@ -31,42 +31,77 @@ const getAllPerusahaan = async (req, res) => {
   }
 };
 
-const updateProfilePerusahaan = async (req, res) => {
-  const { idPerusahaan, aboutMe, alamat } = req.body;
+const updateProfilePictPerusahaan = async (req, res) => {
+  const { idPerusahaan } = req.body;
   const file = req.file;
 
   try {
     const { firebaseStorage } = await firebaseConfig();
-    
-    const fileExtension = path.extname(file.originalname); 
-    const newFileName = `${Date.now()}-${fileExtension}`; 
-    const storageRef = ref(firebaseStorage, `foto-profile-perusahaan/${newFileName}`); 
-    const fileBuffer = file.buffer; 
+
+    const fileExtension = path.extname(file.originalname);
+    const newFileName = `${Date.now()}-${fileExtension}`;
+    const storageRef = ref(
+      firebaseStorage,
+      `foto-profile-perusahaan/${newFileName}`
+    );
+    const fileBuffer = file.buffer;
     const snapshot = await uploadBytes(storageRef, fileBuffer, {
-      contentType: file.mimetype, 
+      contentType: file.mimetype,
     });
     const downloadURL = await getDownloadURL(snapshot.ref);
-    await perusahaanModel.updateProfilePerusahaan(
+    await perusahaanModel.updateProfilePictPerusahaan(
       idPerusahaan,
-      aboutMe,
-      downloadURL,
-      alamat
+      downloadURL
     );
 
     const result = {
       idPerusahaan,
-      aboutMe,
       downloadURL,
-      alamat
-    }
+    };
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: "Profile berhasil diperbarui.",
-      data: result 
+      data: result,
     });
-
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat memperbarui profil perusahaan.",
+      serverMessage: error.message,
+    });
+  }
+};
+
+const updateDataPerusahaan = async (req, res) => {
+  const { 
+    idPerusahaan,
+    email,
+    nama_perusahaan,
+    aboutMe,
+    alamat 
+  } = req.body;
+
+  const data = {
+    idPerusahaan,
+    email,
+    nama_perusahaan,
+    aboutMe,
+    alamat 
+  }
+
+  try {
+    await perusahaanModel.updateDataPerusahaan(
+      idPerusahaan,
+      email,
+      nama_perusahaan,
+      aboutMe,
+      alamat 
+    );
+    res.status(201).json({
+      message: "Profile berhasil diperbarui.",
+    });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Terjadi kesalahan saat memperbarui profil perusahaan.",
       serverMessage: error.message,
@@ -75,13 +110,13 @@ const updateProfilePerusahaan = async (req, res) => {
 };
 
 const cekPelamar = async (req, res) => {
-  const {idPerusahaan} = req.params
+  const { idPerusahaan } = req.params;
 
   try {
-    const [data] = await perusahaanModel.cekPelamar(idPerusahaan)
-    res.status(200).json({ 
-      message: `menampilkan pelamar di perusahaan dengan ID ${idPerusahaan}`, 
-      data: data
+    const [data] = await perusahaanModel.cekPelamar(idPerusahaan);
+    res.status(200).json({
+      message: `menampilkan pelamar di perusahaan dengan ID ${idPerusahaan}`,
+      data: data,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -89,23 +124,26 @@ const cekPelamar = async (req, res) => {
 };
 
 const deletePerusahaanHandler = async (req, res) => {
-  const { id_perusahaan } = req.body; 
-  console.log(id_perusahaan)
+  const { id_perusahaan } = req.body;
+  console.log(id_perusahaan);
   try {
-      const result = await perusahaanModel.deletePerusahaan(id_perusahaan); 
-      if (result[0].affectedRows === 0) {
-          return res.status(404).json({ message: "perusahaan tidak ditemukan" });
-      }
-      res.status(200).json({ message: "perusahaan berhasil dihapus" });
+    const result = await perusahaanModel.deletePerusahaan(id_perusahaan);
+    if (result[0].affectedRows === 0) {
+      return res.status(404).json({ message: "perusahaan tidak ditemukan" });
+    }
+    res.status(200).json({ message: "perusahaan berhasil dihapus" });
   } catch (error) {
-      console.error("Error deleting perusahaan:", error);
-      res.status(500).json({ message: "Terjadi kesalahan saat menghapus perusahaan" });
+    console.error("Error deleting perusahaan:", error);
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan saat menghapus perusahaan" });
   }
 };
 
 module.exports = {
   getAllPerusahaan,
-  updateProfilePerusahaan,
+  updateProfilePictPerusahaan,
+  updateDataPerusahaan,
   cekPelamar,
-  deletePerusahaanHandler
+  deletePerusahaanHandler,
 };

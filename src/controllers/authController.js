@@ -7,8 +7,7 @@ const perusahaanModel = require("../models/perusahaan");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password)
-
+  
   try {
     // cek tabel pelamar
     const [pelamarRows] = await pelamarModel.searchByEmail(email);
@@ -76,8 +75,8 @@ const getUserModelByRole = (role) => {
             return pelamarModel;
         case 'admin':
             return adminModel;
-        case 'hrd':
-            return hrdModel;
+        case 'perusahaan':
+            return perusahaanModel;
         default:
             throw new Error('Role tidak valid');
     }
@@ -85,8 +84,8 @@ const getUserModelByRole = (role) => {
 
 const getUserLoggedIn = async (req, res) => {
     try {
-        const model = getUserModelByRole(req.role); // Pilih model berdasarkan role
-        const response = await model.searchByID(req.id); // Panggil metode searchByID
+        const model = getUserModelByRole(req.role);
+        const response = await model.searchByID(req.id); 
         if (!response) {
             return res.status(404).json({ message: 'User not found', data: null });
         }
