@@ -32,6 +32,33 @@ const getAllPostByIDPerusahaan = (idPerusahaan) => {
     return conn.execute(SQLQuery, [idPerusahaan])
 }
 
+const getPostByIDPostingan = (id_post_pekerjaan) => {
+    const SQLQuery = `
+    SELECT 
+        posting_pekerjaan.id_post_pekerjaan,
+        posting_pekerjaan.id_perusahaan,
+        posting_pekerjaan.posisi,
+        posting_pekerjaan.lokasi,
+        posting_pekerjaan.job_details,
+        posting_pekerjaan.requirements,
+        posting_pekerjaan.status,
+        posting_pekerjaan.createdAt,
+        perusahaan.nama_perusahaan,
+        perusahaan.about_me,
+        perusahaan.profile_pict,
+        perusahaan.alamat
+    FROM 
+        posting_pekerjaan
+    JOIN 
+        perusahaan 
+    ON 
+        posting_pekerjaan.id_perusahaan = perusahaan.id_perusahaan
+    WHERE 
+        posting_pekerjaan.id_post_pekerjaan = ?;
+    `
+    return conn.execute(SQLQuery, [id_post_pekerjaan])
+}
+
 const addPostPekerjaan = (idPerusahaan, posisi, lokasi, jobDetails, requirements, status, createdAt) =>  {
     const SQLQuery = "INSERT INTO posting_pekerjaan(id_perusahaan, posisi, lokasi, job_details, requirements, status, createdAt) VALUES (?,?,?,?,?,?,?)"
     return conn.execute(SQLQuery, [idPerusahaan, posisi, lokasi, jobDetails, requirements, status, createdAt]);
@@ -49,6 +76,7 @@ const editStatusPostingan = (idPostingan, status) => {
 
 module.exports = {
     getAllPostByIDPerusahaan,
+    getPostByIDPostingan,
     getAllPost,
     addPostPekerjaan,
     deletePostingan,
