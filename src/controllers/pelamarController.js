@@ -8,7 +8,6 @@ const {
 const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
 
-
 const getAllPelamar = async (req, res) => {
   try {
     const [data] = await pelamarModel.getAllPelamar();
@@ -19,9 +18,9 @@ const getAllPelamar = async (req, res) => {
         data: data,
       });
     } else {
-        res.json({
-            massage: "Tidak ada pelamar terdaftar"
-        })
+      res.json({
+        massage: "Tidak ada pelamar terdaftar",
+      });
     }
   } catch (error) {
     res.status(500).json({
@@ -33,17 +32,22 @@ const getAllPelamar = async (req, res) => {
 
 const updateProfilePelamar = async (req, res) => {
   const { idPelamar, aboutMe, dateBirth } = req.body;
-  const { CV, profilePict } = req.files; 
+  const { CV, profilePict } = req.files;
 
   try {
     const { firebaseStorage } = await firebaseConfig();
-    
+
     // Upload CV
     const CVFile = CV ? CV[0] : null;
     if (CVFile) {
       const CVExtension = path.extname(CVFile.originalname);
-      const newCVfileName = `${Date.now()}_${CVExtension}`;
-      const storageRef01 = ref(firebaseStorage, `curriculum-vitae/${newCVfileName}`);
+      const CVOriginalName = path.basename(CVFile.originalname, CVExtension); // Mengambil nama asli tanpa ekstensi
+      const newCVfileName = `${Date.now()}_${CVOriginalName}${CVExtension}`;
+
+      const storageRef01 = ref(
+        firebaseStorage,
+        `curriculum-vitae/${newCVfileName}`
+      );
       const CVFileBuffer = CVFile.buffer;
       const resultCV = await uploadBytes(storageRef01, CVFileBuffer, {
         contentType: CVFile.mimetype,
@@ -52,18 +56,30 @@ const updateProfilePelamar = async (req, res) => {
     }
 
     // Upload foto profile
-    const profilePictFile = profilePict ? profilePict[0] : null; 
+    const profilePictFile = profilePict ? profilePict[0] : null;
     if (profilePictFile) {
       const profilePictExtension = path.extname(profilePictFile.originalname);
-      const newProfilePictfileName = `${Date.now()}_${profilePictExtension}`;
-      const storageRef02 = ref(firebaseStorage, `foto-profile-user/${newProfilePictfileName}`);
+      const profilePictOriginalName = path.basename(
+        profilePictFile.originalname,
+        profilePictExtension
+      );
+      const newProfilePictfileName = `${Date.now()}_${profilePictOriginalName}${profilePictExtension}`;
+
+      const storageRef02 = ref(
+        firebaseStorage,
+        `foto-profile-user/${newProfilePictfileName}`
+      );
       const profilePictFileBuffer = profilePictFile.buffer;
-      const resultProfilePict = await uploadBytes(storageRef02, profilePictFileBuffer, {
-        contentType: profilePictFile.mimetype,
-      });
+      const resultProfilePict = await uploadBytes(
+        storageRef02,
+        profilePictFileBuffer,
+        {
+          contentType: profilePictFile.mimetype,
+        }
+      );
       var profilePictdownloadURL = await getDownloadURL(resultProfilePict.ref);
     }
-    
+
     // Upload ke DB
     await pelamarModel.updateProfilePelamar(
       idPelamar,
@@ -81,9 +97,9 @@ const updateProfilePelamar = async (req, res) => {
       profilePictdownloadURL,
     };
 
-    res.status(201).json({ 
+    res.status(200).json({
       message: "Profile berhasil diperbarui.",
-      data: RS 
+      data: RS,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -91,16 +107,18 @@ const updateProfilePelamar = async (req, res) => {
 };
 
 const deletePelamarHandler = async (req, res) => {
-  const { id_pelamar } = req.body; 
+  const { id_pelamar } = req.body;
   try {
-      const result = await pelamarModel.deletePelamar(id_pelamar); 
-      if (result[0].affectedRows === 0) {
-          return res.status(404).json({ message: "Pelamar tidak ditemukan" });
-      }
-      res.status(200).json({ message: "Pelamar berhasil dihapus" });
+    const result = await pelamarModel.deletePelamar(id_pelamar);
+    if (result[0].affectedRows === 0) {
+      return res.status(404).json({ message: "Pelamar tidak ditemukan" });
+    }
+    res.status(200).json({ message: "Pelamar berhasil dihapus" });
   } catch (error) {
-      console.error("Error deleting pelamar:", error);
-      res.status(500).json({ message: "Terjadi kesalahan saat menghapus pelamar" });
+    console.error("Error deleting pelamar:", error);
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan saat menghapus pelamar" });
   }
 };
 
