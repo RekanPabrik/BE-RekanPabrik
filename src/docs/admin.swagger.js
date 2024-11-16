@@ -16,25 +16,33 @@
  *         - email
  *         - password
  *         - role
+ *         - first_name
+ *         - last_name
  *       properties:
  *         id_admin:
  *           type: integer
- *           description: ID unik untuk admin
+ *           description: ID unik untuk admin.
  *           example: 1
  *         email:
  *           type: string
- *           description: Email admin
+ *           description: Email admin.
  *           example: admin@example.com
  *         password:
  *           type: string
- *           description: Password admin
- *           example: 123456
+ *           description: Password admin (hashed).
+ *           example: $2b$10$2mLI9EXAMPLEHASHEDPASSWORD
  *         role:
  *           type: string
- *           enum:
- *             - admin
- *           description: Peran pengguna
+ *           description: Role default admin.
  *           example: admin
+ *         first_name:
+ *           type: string
+ *           description: Nama depan admin.
+ *           example: John
+ *         last_name:
+ *           type: string
+ *           description: Nama belakang admin.
+ *           example: Doe
  */
 
 /**
