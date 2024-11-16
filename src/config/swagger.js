@@ -11,12 +11,27 @@ const options = {
     info: {
       title: 'RekanPabrik Documentation API',
       version: '1.0.0',
-      description: 'Guide / panduan penggunaan API RekanPabrik',
-    }, 
+      description: 'Panduan penggunaan API RekanPabrik',
+    },
     servers: [
       {
         url: `http://localhost:${PORT}`,
-        description: "Server lokal"
+        description: "Server lokal",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT', // Format token yang digunakan
+          description: 'Masukkan token JWT Anda untuk mengakses endpoint.',
+        },
+      },
+    },
+    security: [
+      {
+        BearerAuth: [], // Menerapkan otentikasi Bearer ke semua endpoint secara default
       },
     ],
   },

@@ -40,6 +40,11 @@ app.use("/melamarPekerjaan", verifyJWT, melamarRoute);
 app.use("/saveJobs", verifyJWT, savedJobsRoute);
 
 app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`);
-  console.log(`Dokumentasi Swagger tersedia di http://localhost:${PORT}/api-docs`);
+  console.log(`
+    ## MAIN ROUTE
+    -listening at http://localhost:${PORT}
+    
+    ## SWEGGER ROUTE
+    -Dokumentasi Swagger tersedia di http://localhost:${PORT}/api-docs
+    `);
 });
