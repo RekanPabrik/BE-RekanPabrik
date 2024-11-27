@@ -10,6 +10,7 @@ const perusahaanRoute = require("./routes/perusahaanRoute");
 const postingPekerjaanRoute = require("./routes/postPekerjaanRoute");
 const melamarRoute = require("./routes/melamarPekerjaanRoute");
 const savedJobsRoute = require("./routes/savedJobsRoute");
+const pengaduanRoute = require("./routes/pengaduanRoute");
 const verifyJWT = require("./middleware/verififyJWT");
 const swagger = require('./config/swagger');
 const path = require('path');
@@ -31,6 +32,7 @@ app.use('/api-docs', swagger.swaggerUi.serve, swagger.swaggerUi.setup(swagger.sp
 
 app.use(express.json());
 app.use("/auth", authRoute);
+app.use("/pengaduan", pengaduanRoute);
 app.use("/pelamar", verifyJWT, pelamarRoute);
 app.use("/admin", verifyJWT, adminRoute);
 app.use("/perusahaan", verifyJWT, perusahaanRoute);
