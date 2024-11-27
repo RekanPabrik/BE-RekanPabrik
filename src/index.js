@@ -11,7 +11,6 @@ const postingPekerjaanRoute = require("./routes/postPekerjaanRoute");
 const melamarRoute = require("./routes/melamarPekerjaanRoute");
 const savedJobsRoute = require("./routes/savedJobsRoute");
 const verifyJWT = require("./middleware/verififyJWT");
-// const { specs, swaggerUi } = require('./config/swagger');
 const swagger = require('./config/swagger');
 const path = require('path');
 

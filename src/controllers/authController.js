@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 const adminModel = require("../models/admin");
 const pelamarModel = require("../models/pelamar");
 const perusahaanModel = require("../models/perusahaan");
+const transporter = require("../config/mail.config");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
-    // cek tabel pelamar
     const [pelamarRows] = await pelamarModel.searchByEmail(email);
     if (pelamarRows.length > 0) {
       const pelamar = pelamarRows[0];
@@ -70,31 +70,30 @@ const login = async (req, res) => {
 };
 
 const getUserModelByRole = (role) => {
-    switch (role) {
-        case 'pelamar':
-            return pelamarModel;
-        case 'admin':
-            return adminModel;
-        case 'perusahaan':
-            return perusahaanModel;
-        default:
-            throw new Error('Role tidak valid');
-    }
+  switch (role) {
+    case "pelamar":
+      return pelamarModel;
+    case "admin":
+      return adminModel;
+    case "perusahaan":
+      return perusahaanModel;
+    default:
+      throw new Error("Role tidak valid");
+  }
 };
 
 const getUserLoggedIn = async (req, res) => {
-    try {
-        const model = getUserModelByRole(req.role);
-        const response = await model.searchByID(req.id); 
-        if (!response) {
-            return res.status(404).json({ message: 'User not found', data: null });
-        }
-        res.status(200).json({ message: 'User found', data: response });
-    } catch (error) {
-        res.status(500).json({ message: error.message, data: null });
+  try {
+    const model = getUserModelByRole(req.role);
+    const response = await model.searchByID(req.id);
+    if (!response) {
+      return res.status(404).json({ message: "User not found", data: null });
     }
+    res.status(200).json({ message: "User found", data: response });
+  } catch (error) {
+    res.status(500).json({ message: error.message, data: null });
+  }
 };
-
 
 const createAccountPelamar = async (req, res) => {
   const { email, password, first_name, last_name } = req.body;
@@ -159,10 +158,81 @@ const createAccountAdmin = async (req, res) => {
   }
 };
 
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = null;
+    let role = null;
+
+    const [pelamarRows] = await pelamarModel.searchByEmail(email);
+    if (pelamarRows.length > 0) {
+      user = pelamarRows[0];
+      role = "pelamar";
+    }
+
+    if (!user) {
+      const [adminRows] = await adminModel.searchByEmail(email);
+      if (adminRows.length > 0) {
+        user = adminRows[0];
+        role = "admin";
+      }
+    }
+
+    if (!user) {
+      const [perusahaanRows] = await perusahaanModel.searchByEmail(email);
+      if (perusahaanRows.length > 0) {
+        user = perusahaanRows[0];
+        role = "perusahaan";
+      }
+    }
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Email tidak ditemukan." });
+    }
+
+    const token = jwt.sign(
+      { id: user.id_user || user.id_admin || user.id_perusahaan, role },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    const resetLink = `http://127.0.0.1:8000/resetPassword/${token}`;
+
+    const mailOptions = {
+      from: process.env.AUTH_EMAIL,
+      to: email,
+      subject: "Reset Password",
+      html: `
+        <h2>Anda telah meminta untuk mengatur ulang password.</h2>
+        <h3>Link ini hanya berlaku selama 15 menit.</h3>
+        <p>Klik link berikut untuk mengatur ulang password Anda:</p>
+        <a href="${resetLink}">${resetLink}</a>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      token,
+      message: "Email reset password telah dikirim.",
+    });
+  } catch (error) {
+    console.error("Error mengirim email reset password:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
+  forgetPassword,
   login,
   createAccountPelamar,
   createAccountPerusahaan,
   createAccountAdmin,
-  getUserLoggedIn
+  getUserLoggedIn,
 };

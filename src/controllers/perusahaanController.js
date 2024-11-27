@@ -36,30 +36,36 @@ const updateProfilePictPerusahaan = async (req, res) => {
   const file = req.file;
 
   try {
-    const { firebaseStorage } = await firebaseConfig();
+    const [userData] = await perusahaanModel.searchByID(idPerusahaan);
+    const found = userData[0];
 
-    const fileExtension = path.extname(file.originalname);
-    const newFileName = `${Date.now()}-${fileExtension}`;
-    const storageRef = ref(
-      firebaseStorage,
-      `foto-profile-perusahaan/${newFileName}`
-    );
-    const fileBuffer = file.buffer;
-    const snapshot = await uploadBytes(storageRef, fileBuffer, {
-      contentType: file.mimetype,
-    });
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    await perusahaanModel.updateProfilePictPerusahaan(
-      idPerusahaan,
-      downloadURL
-    );
+    if (!found) {
+      return res.status(404).json({ message: "User tidak ditemukan." });
+    }
 
-    const result = {
-      idPerusahaan,
-      downloadURL,
-    };
+    const { img_path } = found;
+    if (img_path) {
+      const filePath = img_path.split("/o/")[1].split("?")[0];
+      const decodedPath = decodeURIComponent(filePath);
 
-    res.status(201).json({
+      const { firebaseStorage } = await firebaseConfig();
+      const fileRef = ref(firebaseStorage, decodedPath);
+
+      try {
+        await deleteObject(fileRef);
+      } catch (err) {
+        console.error("Gagal menghapus gambar lama:", err.message);
+        return res.status(500).json({
+          message: "Gagal menghapus gambar lama.",
+          error: err.message,
+        });
+      }
+    }
+
+    const profilePictURL = await uploadNewProfilePicture(file);
+    await perusahaanModel.updateProfilePictPerusahaan(idPerusahaan, profilePictURL);
+
+    res.status(200).json({
       message: "Profile berhasil diperbarui.",
       data: result,
     });
@@ -72,6 +78,30 @@ const updateProfilePictPerusahaan = async (req, res) => {
   }
 };
 
+const uploadNewProfilePicture = async (profilePictFile) => {
+  if (!profilePictFile) {
+    throw new Error('File tidak valid');
+  }
+
+  const profilePictFileExtension = path.extname(profilePictFile.originalname);
+  const profilePictFileOriginalName = path.basename(
+    profilePictFile.originalname,
+    profilePictFileExtension
+  );
+  const newProfilePictfileName = `${Date.now()}_${profilePictFileOriginalName}${profilePictFileExtension}`;
+
+  const { firebaseStorage } = await firebaseConfig();
+  const storageRef = ref(firebaseStorage, `GymNation/user-img/${newProfilePictfileName}`);
+
+  const profilePictBuffer = profilePictFile.buffer;
+
+  const resultProfilePict = await uploadBytes(storageRef, profilePictBuffer, {
+    contentType: profilePictFile.mimetype,
+  });
+
+  return await getDownloadURL(resultProfilePict.ref);
+};
+
 const updateDataPerusahaan = async (req, res) => {
   const { 
     idPerusahaan,
@@ -81,14 +111,6 @@ const updateDataPerusahaan = async (req, res) => {
     alamat 
   } = req.body;
 
-  const data = {
-    idPerusahaan,
-    email,
-    nama_perusahaan,
-    aboutMe,
-    alamat 
-  }
-
   try {
     await perusahaanModel.updateDataPerusahaan(
       idPerusahaan,
@@ -97,7 +119,7 @@ const updateDataPerusahaan = async (req, res) => {
       aboutMe,
       alamat 
     );
-    res.status(201).json({
+    res.status(200).json({
       message: "Profile berhasil diperbarui.",
     });
   } catch (error) {
@@ -125,7 +147,6 @@ const cekPelamar = async (req, res) => {
 
 const deletePerusahaanHandler = async (req, res) => {
   const { id_perusahaan } = req.body;
-  console.log(id_perusahaan);
   try {
     const result = await perusahaanModel.deletePerusahaan(id_perusahaan);
     if (result[0].affectedRows === 0) {

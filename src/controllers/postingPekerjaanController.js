@@ -82,7 +82,7 @@ const createdPostinganPekerjaan = async (req, res) => {
       createdAt,
     };
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Postingan pekerjaan berhasil dibuat.",
       data: insertedData,
     });
