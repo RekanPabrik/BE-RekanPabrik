@@ -9,5 +9,6 @@ router.get('/me', verifyJWT, authController.getUserLoggedIn);
 router.post('/registerPelamar', authController.createAccountPelamar);
 router.post('/registerAdmin', verifyJWT, authController.createAccountAdmin);
 router.post('/registerPerusahaan', authController.createAccountPerusahaan);
+router.post('/resetPasword', verifyJWT, authController.resetPassword);
 
 module.exports = router;

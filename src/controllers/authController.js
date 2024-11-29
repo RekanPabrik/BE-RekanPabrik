@@ -228,6 +228,24 @@ const forgetPassword = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { newPassword } = req.body;
+  const model = getUserModelByRole(req.role);
+  const id = req.id;
+
+  try {
+    await model.updatePasswordByID(newPassword, id);
+
+    res.status(200).json({ success: true, message: "Password berhasil direset." });
+  } catch (error) {
+    console.error("Error reset password:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+
 module.exports = {
   forgetPassword,
   login,
@@ -235,4 +253,5 @@ module.exports = {
   createAccountPerusahaan,
   createAccountAdmin,
   getUserLoggedIn,
+  resetPassword
 };

@@ -41,6 +41,14 @@ const deleteAdmin = async (id) => {
   return conn.execute(SQLQuery, [id]);
 };
 
+const updatePasswordByID = async (newPassword, id) => {
+  const saltRounds = 10;
+  const hashedPass = await bcrypt.hash(newPassword, saltRounds);
+
+  const SQLQuery = "UPDATE admin SET password = ? WHERE id_admin = ?";
+  return conn.execute(SQLQuery, [hashedPass,id]);
+}
+
 module.exports = {
   searchByID,
   getAllAdmin,
@@ -48,4 +56,5 @@ module.exports = {
   searchByEmail,
   updateProfileAdmin,
   deleteAdmin,
+  updatePasswordByID
 };

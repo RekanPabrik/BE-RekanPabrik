@@ -33,11 +33,20 @@ const deletePelamar = async (id) => {
     return conn.execute(SQLQuery, [id]);
 };
 
+const updatePasswordByID = async (newPassword, id) => {
+    const saltRounds = 10;
+    const hashedPass = await bcrypt.hash(newPassword, saltRounds);
+  
+    const SQLQuery = "UPDATE pelamar SET password = ? WHERE id_pelamar = ?";
+    return conn.execute(SQLQuery, [hashedPass,id]);
+  }
+
 module.exports = {
     getAllPelamar,
     addPelamar,
     searchByEmail,
     updateProfilePelamar,
     searchByID,
-    deletePelamar
+    deletePelamar,
+    updatePasswordByID
 }
