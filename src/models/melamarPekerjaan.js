@@ -10,7 +10,29 @@ const updateStatus = async (status, idPostPekerjaan) => {
     return conn.execute(SQLQuery, [status, idPostPekerjaan]);
 }
 
+
+const getDataMelamarPekarjaan = () => {
+    const SQLQuery = `
+        SELECT 
+            pelamar.first_name AS nama_depan_pelamar,
+            pelamar.last_name AS nama_belakang_pelamar,
+            posting_pekerjaan.posisi AS posisi_pekerjaan,
+            melamar_pekerjaan.status AS status_lamaran,
+            perusahaan.nama_perusahaan AS nama_perusahaan
+        FROM 
+            melamar_pekerjaan
+        JOIN 
+            pelamar ON melamar_pekerjaan.id_pelamar = pelamar.id_pelamar
+        JOIN 
+            posting_pekerjaan ON melamar_pekerjaan.id_post_pekerjaan = posting_pekerjaan.id_post_pekerjaan
+        JOIN 
+            perusahaan ON posting_pekerjaan.id_perusahaan = perusahaan.id_perusahaan;
+    `
+    return conn.execute(SQLQuery);
+}
+
 module.exports = {
     reqMelamarPekerjaan,
-    updateStatus
+    updateStatus,
+    getDataMelamarPekarjaan,
 }

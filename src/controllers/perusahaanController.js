@@ -4,6 +4,7 @@ const {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } = require("firebase/storage");
 const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
@@ -32,7 +33,7 @@ const getAllPerusahaan = async (req, res) => {
 };
 
 const updateProfilePictPerusahaan = async (req, res) => {
-  const { idPerusahaan } = req.body;
+  const { idPerusahaan } = req.params;
   const file = req.file;
 
   try {
@@ -43,9 +44,9 @@ const updateProfilePictPerusahaan = async (req, res) => {
       return res.status(404).json({ message: "User tidak ditemukan." });
     }
 
-    const { img_path } = found;
-    if (img_path) {
-      const filePath = img_path.split("/o/")[1].split("?")[0];
+    const { profile_pict } = found;
+    if (profile_pict) {
+      const filePath = profile_pict.split("/o/")[1].split("?")[0];
       const decodedPath = decodeURIComponent(filePath);
 
       const { firebaseStorage } = await firebaseConfig();
@@ -67,7 +68,6 @@ const updateProfilePictPerusahaan = async (req, res) => {
 
     res.status(200).json({
       message: "Profile berhasil diperbarui.",
-      data: result,
     });
   } catch (error) {
     console.log(error);
@@ -91,7 +91,7 @@ const uploadNewProfilePicture = async (profilePictFile) => {
   const newProfilePictfileName = `${Date.now()}_${profilePictFileOriginalName}${profilePictFileExtension}`;
 
   const { firebaseStorage } = await firebaseConfig();
-  const storageRef = ref(firebaseStorage, `GymNation/user-img/${newProfilePictfileName}`);
+  const storageRef = ref(firebaseStorage, `foto-profile-perusahaan/${newProfilePictfileName}`);
 
   const profilePictBuffer = profilePictFile.buffer;
 
@@ -161,10 +161,28 @@ const deletePerusahaanHandler = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  const { id_perusahaan } = req.params;
+  const {newPass} = req.body;
+  
+  try {
+    console.log(newPass)
+    await perusahaanModel.updatePasswordByID(newPass, id_perusahaan);
+    res.status(200).json({ message: "password berhasil di perbarui" });
+    
+  } catch (error) {
+    console.error("Error update password:", error);
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan saat mengubah password" });
+  }
+};
+
 module.exports = {
   getAllPerusahaan,
   updateProfilePictPerusahaan,
   updateDataPerusahaan,
   cekPelamar,
   deletePerusahaanHandler,
+  changePassword
 };

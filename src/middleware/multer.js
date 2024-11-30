@@ -9,7 +9,6 @@ const storage = multer.memoryStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    console.log(file)
     if (
         file.mimetype === 'image/jpeg' ||
         file.mimetype === 'image/jpg' ||

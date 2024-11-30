@@ -28,7 +28,30 @@ const updateStatus = async (req, res) => {
     }
 }
 
+const getDataMelamarPekarjaan = async (req, res) => {
+    try {
+        const [data] = await melamarPekerjaanModel.getDataMelamarPekarjaan();
+        if (data.length > 0) {
+            res.json({
+              massage: "menampilkan data melamar pekerjaan",
+              data: data,
+            });
+          } else {
+            res.json({
+              massage: "Tidak ada data melamar pekerjaan",
+            });
+          }
+    } catch (error) {
+        console.error("Error Details:", error);
+        res.status(500).json({
+            massage: "error",
+            serverMassage: error,
+          });
+    }
+}
+
 module.exports = {
     melamarPekerjaan,
-    updateStatus
+    updateStatus,
+    getDataMelamarPekarjaan
 }

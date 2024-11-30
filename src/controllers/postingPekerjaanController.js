@@ -108,7 +108,8 @@ const deletePostingan = async (req, res) => {
 };
 
 const updateStatus = async (req, res) => {
-  const { idPostPekerjaan, status } = req.body;
+  const {idPostPekerjaan} = req.params
+  const { status } = req.body;
 
   try {
     await postPekerjaanModel.editStatusPostingan(idPostPekerjaan, status);
@@ -120,10 +121,26 @@ const updateStatus = async (req, res) => {
   }
 };
 
+const getDetailPelamar = async (req, res) => {
+  const { idPelamar } = req.params;
+
+  try {
+    const [result] = await postPekerjaanModel.getDetailPelamar(idPelamar)
+    res.status(200).json({
+      message: "menampilkann data pelamar.",
+      data: result
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
 module.exports = {
   getAllPostByIdPerusahaan,
   getPostinganByIdPostPekerjaan,
   createdPostinganPekerjaan,
   deletePostingan,
   updateStatus,
+  getDetailPelamar
 };

@@ -4,5 +4,6 @@ const melamarPekerjaanControllers = require('../controllers/melamarPekerjaanCont
 
 router.post('/melamar', melamarPekerjaanControllers.melamarPekerjaan);
 router.patch('/updateStatus/:idPostPekerjaan', melamarPekerjaanControllers.updateStatus)
+router.get('/getDataMelamarPekarjaan', melamarPekerjaanControllers.getDataMelamarPekarjaan)
 
 module.exports = router;
