@@ -5,6 +5,11 @@ const getAllPost = () => {
   return conn.execute(SQLQuery);
 };
 
+const getAllPostByIDPostingan = (id_post_pekerjaan) => {
+  const SQLQuery = "SELECT * FROM posting_pekerjaan WHERE id_post_pekerjaan = ?";
+  return conn.execute(SQLQuery, [id_post_pekerjaan]);
+};
+
 const getAllPostByIDPerusahaan = (idPerusahaan) => {
   const SQLQuery = `
     SELECT 
@@ -116,6 +121,7 @@ const getDetailPelamar = (idPelamar) => {
 
 module.exports = {
   getAllPostByIDPerusahaan,
+  getAllPostByIDPostingan,
   getPostByIDPostingan,
   getAllPost,
   addPostPekerjaan,

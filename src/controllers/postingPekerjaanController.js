@@ -1,5 +1,27 @@
 const postPekerjaanModel = require("../models/postingPekerjaan");
 
+const getAllPost = async (req, res) => {
+  try {
+    const [data] = await postPekerjaanModel.getAllPost();
+
+    if (data.length > 0) {
+      res.json({
+        massage: "menampilkan data postingan pekerjaan",
+        data: data,
+      });
+    } else {
+      res.json({
+        massage: "Tidak ada postingan pekerjaan",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      massage: "error",
+      serverMassage: error,
+    });
+  }
+};
+
 const getAllPostByIdPerusahaan = async (req, res) => {
   const { idPerusahaan } = req.params;
 
@@ -30,9 +52,7 @@ const getAllPostByIdPerusahaan = async (req, res) => {
 const getPostinganByIdPostPekerjaan = async (req, res) => {
   const { idPostingan } = req.params;
   try {
-    const [data] = await postPekerjaanModel.getPostByIDPostingan(
-        idPostingan
-    );
+    const [data] = await postPekerjaanModel.getPostByIDPostingan(idPostingan);
 
     if (data.length > 0) {
       res.json({
@@ -108,7 +128,7 @@ const deletePostingan = async (req, res) => {
 };
 
 const updateStatus = async (req, res) => {
-  const {idPostPekerjaan} = req.params
+  const { idPostPekerjaan } = req.params;
   const { status } = req.body;
 
   try {
@@ -125,22 +145,23 @@ const getDetailPelamar = async (req, res) => {
   const { idPelamar } = req.params;
 
   try {
-    const [result] = await postPekerjaanModel.getDetailPelamar(idPelamar)
+    const [result] = await postPekerjaanModel.getDetailPelamar(idPelamar);
     res.status(200).json({
       message: "menampilkann data pelamar.",
-      data: result
+      data: result,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
 
 module.exports = {
+  getAllPost,
   getAllPostByIdPerusahaan,
   getPostinganByIdPostPekerjaan,
   createdPostinganPekerjaan,
   deletePostingan,
   updateStatus,
-  getDetailPelamar
+  getDetailPelamar,
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const postPekerjaanController = require('../controllers/postingPekerjaanController');
 
+router.get('/getPostAllPostingan', postPekerjaanController.getAllPost);
 router.get('/getPost/:idPerusahaan', postPekerjaanController.getAllPostByIdPerusahaan);
 router.get('/detailPost/:idPostingan', postPekerjaanController.getPostinganByIdPostPekerjaan);
 router.post('/newPostPekerjaan', postPekerjaanController.createdPostinganPekerjaan);
