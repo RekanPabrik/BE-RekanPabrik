@@ -194,11 +194,10 @@ const forgetPassword = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id_user || user.id_admin || user.id_perusahaan, role },
+      { id: user.id_pelamar || user.id_admin || user.id_perusahaan, role },
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
-
     const resetLink = `http://127.0.0.1:8000/resetPassword/${token}`;
 
     const mailOptions = {

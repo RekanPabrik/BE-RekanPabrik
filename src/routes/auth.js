@@ -10,5 +10,6 @@ router.post('/registerPelamar', authController.createAccountPelamar);
 router.post('/registerAdmin', verifyJWT, authController.createAccountAdmin);
 router.post('/registerPerusahaan', authController.createAccountPerusahaan);
 router.post('/resetPasword', verifyJWT, authController.resetPassword);
+router.post('/requestResetPassword', authController.forgetPassword);
 
 module.exports = router;
