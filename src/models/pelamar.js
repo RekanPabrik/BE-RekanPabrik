@@ -23,10 +23,16 @@ const searchByID = async (id) => {
     return conn.execute(SQLQuery, [id]);
 }
 
-const updateProfilePelamar = async (idPelamar, aboutMe, CV, dateBirth, profile_pict) => {
-    const SQLQuery = "UPDATE pelamar SET about_me = ?, curriculum_vitae = ?, date_birth = ?, profile_pict = ? WHERE id_pelamar = ?";
-    return conn.execute(SQLQuery, [aboutMe, CV, dateBirth, profile_pict, idPelamar]);
+const updateDataPelamar = async (idPelamar, first_name, last_name, email, aboutMe) => {
+    const SQLQuery = "UPDATE pelamar SET first_name = ?, last_name = ?, email = ?, about_me = ? WHERE id_pelamar = ?";
+    return conn.execute(SQLQuery, [first_name, last_name, email, aboutMe,  idPelamar]);
 }
+
+const updateProfilePictPelamar = async (profilePict, idPelamar ) => {
+    const SQLQuery =
+      "UPDATE pelamar SET  profile_pict = ? WHERE id_pelamar = ?";
+    return conn.execute(SQLQuery, [profilePict, idPelamar]);
+  };
 
 const deletePelamar = async (id) => {
     const SQLQuery = "DELETE FROM pelamar WHERE id_pelamar = ?";
@@ -43,9 +49,10 @@ const updatePasswordByID = async (newPassword, id) => {
 
 module.exports = {
     getAllPelamar,
+    updateDataPelamar,
     addPelamar,
     searchByEmail,
-    updateProfilePelamar,
+    updateProfilePictPelamar,
     searchByID,
     deletePelamar,
     updatePasswordByID

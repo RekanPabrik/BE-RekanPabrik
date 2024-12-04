@@ -4,6 +4,7 @@ const {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } = require("firebase/storage");
 const firebaseConfig = require("../config/firebase.config");
 const path = require("path");
@@ -30,80 +31,92 @@ const getAllPelamar = async (req, res) => {
   }
 };
 
-const updateProfilePelamar = async (req, res) => {
-  const { idPelamar, aboutMe, dateBirth } = req.body;
-  const { CV, profilePict } = req.files;
+const updateDataPelamr = async(req, res) =>{
+  const { idPelamar } = req.params;
+  const { first_name, last_name, email, aboutMe } = req.body;
 
   try {
-    const { firebaseStorage } = await firebaseConfig();
+    await pelamarModel.updateDataPelamar(idPelamar, first_name, last_name, email, aboutMe)
+    res.json({
+      massage: "data berhasil terupdate",
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      massage: "error",
+      serverMassage: error,
+    });
+  }
+}
 
-    // Upload CV
-    const CVFile = CV ? CV[0] : null;
-    if (CVFile) {
-      const CVExtension = path.extname(CVFile.originalname);
-      const CVOriginalName = path.basename(CVFile.originalname, CVExtension); // Mengambil nama asli tanpa ekstensi
-      const newCVfileName = `${Date.now()}_${CVOriginalName}${CVExtension}`;
+const updateProfilePictPelamar = async (req, res) => {
+  const { idPelamar } = req.params;
+  const file = req.file;
 
-      const storageRef01 = ref(
-        firebaseStorage,
-        `curriculum-vitae/${newCVfileName}`
-      );
-      const CVFileBuffer = CVFile.buffer;
-      const resultCV = await uploadBytes(storageRef01, CVFileBuffer, {
-        contentType: CVFile.mimetype,
-      });
-      var CVdownloadURL = await getDownloadURL(resultCV.ref);
+  try {
+    const [userData] = await pelamarModel.searchByID(idPelamar);
+    const found = userData[0];
+
+    if (!found) {
+      return res.status(404).json({ message: "User tidak ditemukan." });
     }
 
-    // Upload foto profile
-    const profilePictFile = profilePict ? profilePict[0] : null;
-    if (profilePictFile) {
-      const profilePictExtension = path.extname(profilePictFile.originalname);
-      const profilePictOriginalName = path.basename(
-        profilePictFile.originalname,
-        profilePictExtension
-      );
-      const newProfilePictfileName = `${Date.now()}_${profilePictOriginalName}${profilePictExtension}`;
+    const { profile_pict } = found;
+    if (profile_pict) {
+      const filePath = profile_pict.split("/o/")[1].split("?")[0];
+      const decodedPath = decodeURIComponent(filePath);
 
-      const storageRef02 = ref(
-        firebaseStorage,
-        `foto-profile-user/${newProfilePictfileName}`
-      );
-      const profilePictFileBuffer = profilePictFile.buffer;
-      const resultProfilePict = await uploadBytes(
-        storageRef02,
-        profilePictFileBuffer,
-        {
-          contentType: profilePictFile.mimetype,
-        }
-      );
-      var profilePictdownloadURL = await getDownloadURL(resultProfilePict.ref);
+      const { firebaseStorage } = await firebaseConfig();
+      const fileRef = ref(firebaseStorage, decodedPath);
+
+      try {
+        await deleteObject(fileRef);
+      } catch (err) {
+        console.error("Gagal menghapus gambar lama:", err.message);
+        return res.status(500).json({
+          message: "Gagal menghapus gambar lama.",
+          error: err.message,
+        });
+      }
     }
 
-    // Upload ke DB
-    await pelamarModel.updateProfilePelamar(
-      idPelamar,
-      aboutMe,
-      CVdownloadURL,
-      dateBirth,
-      profilePictdownloadURL
-    );
-
-    const RS = {
-      idPelamar,
-      aboutMe,
-      CVdownloadURL,
-      dateBirth,
-      profilePictdownloadURL,
-    };
+    const profilePictURL = await uploadNewProfilePicture(file);
+    await pelamarModel.updateProfilePictPelamar(profilePictURL, idPelamar);
 
     res.status(200).json({
       message: "Profile berhasil diperbarui.",
-      data: RS,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.log(error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat memperbarui profil perusahaan.",
+      serverMessage: error.message,
+    });
   }
+};
+
+const uploadNewProfilePicture = async (profilePictFile) => {
+  if (!profilePictFile) {
+    throw new Error('File tidak valid');
+  }
+
+  const profilePictFileExtension = path.extname(profilePictFile.originalname);
+  const profilePictFileOriginalName = path.basename(
+    profilePictFile.originalname,
+    profilePictFileExtension
+  );
+  const newProfilePictfileName = `${Date.now()}_${profilePictFileOriginalName}${profilePictFileExtension}`;
+
+  const { firebaseStorage } = await firebaseConfig();
+  const storageRef = ref(firebaseStorage, `foto-profile-user/${newProfilePictfileName}`);
+
+  const profilePictBuffer = profilePictFile.buffer;
+
+  const resultProfilePict = await uploadBytes(storageRef, profilePictBuffer, {
+    contentType: profilePictFile.mimetype,
+  });
+
+  return await getDownloadURL(resultProfilePict.ref);
 };
 
 const deletePelamarHandler = async (req, res) => {
@@ -124,6 +137,7 @@ const deletePelamarHandler = async (req, res) => {
 
 module.exports = {
   getAllPelamar,
-  updateProfilePelamar,
+  updateDataPelamr,
+  updateProfilePictPelamar,
   deletePelamarHandler,
 };
