@@ -32,6 +32,23 @@ const getAllPerusahaan = async (req, res) => {
   }
 };
 
+const getAllPerusahaanByIDPerusahaan = async (req, res) => {
+  const {idperusahaan} = req.params;
+
+  try {
+    const [data] = await perusahaanModel.getAllPerusahaanByIDPerusahaan(idperusahaan);
+    res.json({
+      massage: "menampilkan data akun perusahaan",
+      data: data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      massage: "error",
+      serverMassage: error,
+    });
+  }
+};
+
 const updateProfilePictPerusahaan = async (req, res) => {
   const { idPerusahaan } = req.params;
   const file = req.file;
@@ -166,7 +183,6 @@ const changePassword = async (req, res) => {
   const {newPass} = req.body;
   
   try {
-    console.log(newPass)
     await perusahaanModel.updatePasswordByID(newPass, id_perusahaan);
     res.status(200).json({ message: "password berhasil di perbarui" });
     
@@ -179,6 +195,7 @@ const changePassword = async (req, res) => {
 };
 
 module.exports = {
+  getAllPerusahaanByIDPerusahaan,
   getAllPerusahaan,
   updateProfilePictPerusahaan,
   updateDataPerusahaan,

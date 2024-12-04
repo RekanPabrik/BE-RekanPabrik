@@ -2,8 +2,63 @@ const conn = require("../config/db_connection");
 const bcrypt = require("bcrypt");
 
 const getAllPerusahaan = () => {
-  const SQLQuery = "SELECT * FROM perusahaan";
+  const SQLQuery = `
+  SELECT 
+    perusahaan.id_perusahaan,
+    perusahaan.nama_perusahaan,
+    perusahaan.email,
+    perusahaan.about_me,
+    perusahaan.profile_pict,
+    perusahaan.alamat,
+    COUNT(posting_pekerjaan.id_post_pekerjaan) AS jumlah_posting
+FROM 
+    perusahaan
+LEFT JOIN 
+    posting_pekerjaan 
+ON 
+    perusahaan.id_perusahaan = posting_pekerjaan.id_perusahaan
+GROUP BY 
+    perusahaan.id_perusahaan, 
+    perusahaan.nama_perusahaan, 
+    perusahaan.email, 
+    perusahaan.about_me, 
+    perusahaan.profile_pict, 
+    perusahaan.alamat
+ORDER BY 
+    jumlah_posting DESC;
+
+  `;
   return conn.execute(SQLQuery);
+};
+
+const getAllPerusahaanByIDPerusahaan = (idperusahaan) => {
+  const SQLQuery = `
+    SELECT 
+    perusahaan.id_perusahaan,
+    perusahaan.nama_perusahaan,
+    perusahaan.email,
+    perusahaan.about_me,
+    perusahaan.profile_pict,
+    perusahaan.alamat,
+    COUNT(posting_pekerjaan.id_post_pekerjaan) AS jumlah_posting
+FROM 
+    perusahaan
+LEFT JOIN 
+    posting_pekerjaan 
+ON 
+    perusahaan.id_perusahaan = posting_pekerjaan.id_perusahaan
+WHERE 
+    perusahaan.id_perusahaan = ?
+GROUP BY 
+    perusahaan.id_perusahaan, 
+    perusahaan.nama_perusahaan, 
+    perusahaan.email, 
+    perusahaan.about_me, 
+    perusahaan.profile_pict, 
+    perusahaan.alamat;
+
+  `;
+  return conn.execute(SQLQuery, [idperusahaan]);
 };
 
 const addPerusahaan = async (email, plainpassword, role, namaPerusahaan) => {
@@ -91,6 +146,7 @@ const updatePasswordByID = async (newPassword, id) => {
 
 module.exports = {
   searchByID,
+  getAllPerusahaanByIDPerusahaan,
   getAllPerusahaan,
   addPerusahaan,
   searchByEmail,

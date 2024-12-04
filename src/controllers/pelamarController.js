@@ -119,6 +119,77 @@ const uploadNewProfilePicture = async (profilePictFile) => {
   return await getDownloadURL(resultProfilePict.ref);
 };
 
+const updateCVPelamar = async (req, res) => {
+  const { idPelamar } = req.params;
+  const file = req.file;
+
+  try {
+    const [userData] = await pelamarModel.searchByID(idPelamar);
+    const found = userData[0];
+
+    if (!found) {
+      return res.status(404).json({ message: "User tidak ditemukan." });
+    }
+
+    const { curriculum_vitae } = found;
+    if (curriculum_vitae) {
+      const filePath = curriculum_vitae.split("/o/")[1].split("?")[0];
+      const decodedPath = decodeURIComponent(filePath);
+
+      const { firebaseStorage } = await firebaseConfig();
+      const fileRef = ref(firebaseStorage, decodedPath);
+
+      try {
+        await deleteObject(fileRef);
+      } catch (err) {
+        console.error("Gagal menghapus gambar lama:", err.message);
+        return res.status(500).json({
+          message: "Gagal menghapus gambar lama.",
+          error: err.message,
+        });
+      }
+    }
+
+    const profilePictURL = await uploadNewCV(file);
+    await pelamarModel.updateCV(profilePictURL, idPelamar);
+
+    res.status(200).json({
+      message: "Profile berhasil diperbarui.",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat memperbarui profil perusahaan.",
+      serverMessage: error.message,
+    });
+  }
+};
+
+
+const uploadNewCV = async (profilePictFile) => {
+  if (!profilePictFile) {
+    throw new Error('File tidak valid');
+  }
+
+  const profilePictFileExtension = path.extname(profilePictFile.originalname);
+  const profilePictFileOriginalName = path.basename(
+    profilePictFile.originalname,
+    profilePictFileExtension
+  );
+  const newProfilePictfileName = `${Date.now()}_${profilePictFileOriginalName}${profilePictFileExtension}`;
+
+  const { firebaseStorage } = await firebaseConfig();
+  const storageRef = ref(firebaseStorage, `curriculum_vitae/${newProfilePictfileName}`);
+
+  const profilePictBuffer = profilePictFile.buffer;
+
+  const resultProfilePict = await uploadBytes(storageRef, profilePictBuffer, {
+    contentType: profilePictFile.mimetype,
+  });
+
+  return await getDownloadURL(resultProfilePict.ref);
+};
+
 const deletePelamarHandler = async (req, res) => {
   const { id_pelamar } = req.body;
   try {
@@ -135,9 +206,27 @@ const deletePelamarHandler = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  const { id_pelamar } = req.params;
+  const {newPass} = req.body;
+  
+  try {
+    await pelamarModel.updatePasswordByID(newPass, id_pelamar);
+    res.status(200).json({ message: "password berhasil di perbarui" });
+    
+  } catch (error) {
+    console.error("Error update password:", error);
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan saat mengubah password" });
+  }
+};
+
 module.exports = {
   getAllPelamar,
   updateDataPelamr,
   updateProfilePictPelamar,
+  updateCVPelamar,
   deletePelamarHandler,
+  changePassword,
 };

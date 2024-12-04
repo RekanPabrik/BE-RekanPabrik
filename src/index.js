@@ -35,7 +35,7 @@ app.use("/auth", authRoute);
 app.use("/pengaduan", pengaduanRoute);
 app.use("/pelamar", verifyJWT, pelamarRoute);
 app.use("/admin", verifyJWT, adminRoute);
-app.use("/perusahaan", verifyJWT, perusahaanRoute);
+app.use("/perusahaan", perusahaanRoute);
 app.use("/postPekerjaan", verifyJWT, postingPekerjaanRoute);
 app.use("/melamarPekerjaan", verifyJWT, melamarRoute);
 app.use("/saveJobs", verifyJWT, savedJobsRoute);

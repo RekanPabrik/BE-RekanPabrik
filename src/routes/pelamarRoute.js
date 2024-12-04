@@ -10,6 +10,12 @@ router.patch(
   multer.single("profile_pict"),
   pelamarController.updateProfilePictPelamar
 );
+router.patch(
+  "/updateCV/:idPelamar",
+  multer.single("CV"),
+  pelamarController.updateCVPelamar
+);
 router.delete("/deletePelamar", pelamarController.deletePelamarHandler);
+router.patch('/changePassword/:id_pelamar', pelamarController.changePassword);
 
 module.exports = router;
