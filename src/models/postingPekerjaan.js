@@ -1,7 +1,23 @@
 const conn = require("../config/db_connection");
 
 const getAllPost = () => {
-  const SQLQuery = "SELECT * FROM posting_pekerjaan";
+  const SQLQuery = `
+  SELECT 
+    posting_pekerjaan.id_post_pekerjaan, 
+    posting_pekerjaan.id_perusahaan, 
+    posting_pekerjaan.posisi, 
+    posting_pekerjaan.lokasi, 
+    posting_pekerjaan.job_details, 
+    posting_pekerjaan.requirements, 
+    posting_pekerjaan.status, 
+    posting_pekerjaan.createdAt, 
+    perusahaan.nama_perusahaan
+FROM 
+    posting_pekerjaan
+JOIN 
+    perusahaan ON posting_pekerjaan.id_perusahaan = perusahaan.id_perusahaan;
+
+  `;
   return conn.execute(SQLQuery);
 };
 

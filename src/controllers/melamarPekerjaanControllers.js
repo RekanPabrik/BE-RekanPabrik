@@ -74,9 +74,34 @@ const getMelamarHistortyByIDpelamar = async(req, res) => {
     }
 }
 
+const getMelamarHistortyByIDPostingan = async(req, res) => {
+    const {idPostinganPekerjaan} = req.params;
+
+    try {
+        const [data] = await melamarPekerjaanModel.getMelamarHistortyByIDPostingan(idPostinganPekerjaan);
+        if (data.length > 0) {
+            res.json({
+              massage: "menampilkan data postingan pekerjaan",
+              data: data,
+            });
+          } else {
+            res.json({
+              massage: "Tidak ada data postingan pekerjaan",
+            });
+          }
+    } catch (error) {
+        console.error("Error Details:", error);
+        res.status(500).json({
+            massage: "error",
+            serverMassage: error,
+          });
+    }
+}
+
 module.exports = {
     melamarPekerjaan,
     getMelamarHistortyByIDpelamar,
     updateStatus,
-    getDataMelamarPekarjaan
+    getDataMelamarPekarjaan,
+    getMelamarHistortyByIDPostingan
 }
