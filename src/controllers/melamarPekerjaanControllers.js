@@ -14,11 +14,11 @@ const melamarPekerjaan = async (req, res) => {
 }
 
 const updateStatus = async (req, res) => {
-    const {idPostPekerjaan} = req.params;
+    const {idlamaranpekerjaan} = req.params;
     const {status} = req.body;
 
     try {
-        await melamarPekerjaanModel.updateStatus(status, idPostPekerjaan);
+        await melamarPekerjaanModel.updateStatus(status, idlamaranpekerjaan);
         res.status(200).json({ 
             message: "status di ubah", 
             Status : status

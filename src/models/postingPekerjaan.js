@@ -118,6 +118,7 @@ const getDetailPelamar = (idPelamar) => {
     SELECT 
         pelamar.profile_pict AS foto_pelamar,
         melamar_pekerjaan.status AS status_lamaran,
+            melamar_pekerjaan.id_lamaran_pekerjaan AS id_lamaran_pekerjaan,
         pelamar.first_name AS nama_depan,
         pelamar.last_name AS nama_belakang,
         posting_pekerjaan.posisi AS posisi_dilamar,

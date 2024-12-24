@@ -5,9 +5,9 @@ const reqMelamarPekerjaan = async (idPostPekerjaan, idPelamar, createdAt ,status
     return conn.execute(SQLQuery, [idPostPekerjaan, idPelamar, createdAt, status])
 } 
 
-const updateStatus = async (status, idPostPekerjaan) => {
-    const SQLQuery = "UPDATE melamar_pekerjaan SET status = ? WHERE id_post_pekerjaan = ?";
-    return conn.execute(SQLQuery, [status, idPostPekerjaan]);
+const updateStatus = async (status, idlamaranpekerjaan) => {
+    const SQLQuery = "UPDATE melamar_pekerjaan SET status = ? WHERE id_lamaran_pekerjaan = ?";
+    return conn.execute(SQLQuery, [status, idlamaranpekerjaan]);
 }
 
 const getMelamarHistortyByIDpelamar  = async (idpelamar)  => {
