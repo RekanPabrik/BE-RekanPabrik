@@ -31,10 +31,10 @@ const countUser = async (req, res) => {
     const [perusahaan] = await perusahaanModel.getAllPerusahaan();
     const [postinganPekerjaan] = await postPekerjaanModel.getAllPost();
 
-    jumlahPelamar = pelamar.length;
-    jumlahAdmin = admin.length;
-    jumlahPerusahaan = perusahaan.length;
-    jumlahPostinganPekerjaan = postinganPekerjaan.length;
+    let jumlahPelamar = pelamar.length;
+    let jumlahAdmin = admin.length;
+    let jumlahPerusahaan = perusahaan.length;
+    let jumlahPostinganPekerjaan = postinganPekerjaan.length;
     res.status(200).json({
       message: {
         jumlahPelamar: `Jumlah Pelamar: ${jumlahPelamar}`,
