@@ -1,8 +1,4 @@
-const multer = require("multer");
 const sharp = require("sharp");
-const gs = require("ghostscript4js");
-const fs = require("fs");
-const path = require("path");
 
 const compressImage = async (req, res, next) => {
   if (!req.file) {
