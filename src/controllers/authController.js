@@ -203,13 +203,34 @@ const forgetPassword = async (req, res) => {
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
       to: email,
-      subject: "Reset Password",
+      subject: "Permintaan Atur Ulang Password Anda",
+      headers: {
+        "X-Priority": "1",
+        "X-MSMail-Priority": "High",
+        Importance: "high",
+      },
       html: `
-        <h2>Anda telah meminta untuk mengatur ulang password.</h2>
-        <h3>Link ini hanya berlaku selama 15 menit.</h3>
-        <p>Klik link berikut untuk mengatur ulang password Anda:</p>
-        <a href="${resetLink}">${resetLink}</a>
-      `,
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #333;">Reset Password Akun Anda</h2>
+      <p>Halo,</p>
+      <p>Kami menerima permintaan untuk mengatur ulang password akun Anda. Jika Anda tidak merasa melakukan permintaan ini, abaikan saja email ini dan tidak akan terjadi perubahan apa pun.</p>
+      
+      <p>Untuk melanjutkan proses pengaturan ulang password, silakan klik tombol di bawah ini:</p>
+      
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${resetLink}" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          Reset Password
+        </a>
+      </div>
+
+      <p><strong>Catatan:</strong> Link ini hanya berlaku selama <strong>15 menit</strong> demi keamanan akun Anda.</p>
+
+      <p>Terima kasih telah menggunakan layanan kami.</p>
+      
+      <hr style="margin: 30px 0;">
+      <p style="font-size: 12px; color: #888;">Email ini dikirim secara otomatis, mohon untuk tidak membalas. Jika Anda membutuhkan bantuan, silakan hubungi tim dukungan kami.</p>
+    </div>
+  `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -235,7 +256,9 @@ const resetPassword = async (req, res) => {
   try {
     await model.updatePasswordByID(newPassword, id);
 
-    res.status(200).json({ success: true, message: "Password berhasil direset." });
+    res
+      .status(200)
+      .json({ success: true, message: "Password berhasil direset." });
   } catch (error) {
     console.error("Error reset password:", error);
     res
@@ -244,7 +267,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
 module.exports = {
   forgetPassword,
   login,
@@ -252,5 +274,5 @@ module.exports = {
   createAccountPerusahaan,
   createAccountAdmin,
   getUserLoggedIn,
-  resetPassword
+  resetPassword,
 };
