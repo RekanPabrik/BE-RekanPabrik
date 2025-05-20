@@ -142,10 +142,10 @@ const updateStatus = async (req, res) => {
 };
 
 const getDetailPelamar = async (req, res) => {
-  const { idPelamar } = req.params;
+  const { idLamaranPekerjaan } = req.params;
 
   try {
-    const [result] = await postPekerjaanModel.getDetailPelamar(idPelamar);
+    const [result] = await postPekerjaanModel.getDetailPelamar(idLamaranPekerjaan);
     res.status(200).json({
       message: "menampilkann data pelamar.",
       data: result,
