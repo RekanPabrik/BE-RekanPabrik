@@ -198,7 +198,7 @@ const forgetPassword = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
-    const resetLink = `http://127.0.0.1:8000/resetPassword/${token}`;
+    const resetLink = `${process.env.WEB_URL}/resetPassword/${token}`;
 
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
