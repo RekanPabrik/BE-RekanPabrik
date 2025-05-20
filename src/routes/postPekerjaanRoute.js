@@ -8,6 +8,6 @@ router.get('/detailPost/:idPostingan', postPekerjaanController.getPostinganByIdP
 router.post('/newPostPekerjaan', postPekerjaanController.createdPostinganPekerjaan);
 router.delete('/deletePostingan/:idPostPekerjaan', postPekerjaanController.deletePostingan);
 router.patch('/updateStatusPostingan/:idPostPekerjaan', postPekerjaanController.updateStatus);
-router.get('/getDetailPelamar/:idPelamar', postPekerjaanController.getDetailPelamar);
+router.get('/getDetailPelamar/:idLamaranPekerjaan', postPekerjaanController.getDetailPelamar);
 
 module.exports = router;

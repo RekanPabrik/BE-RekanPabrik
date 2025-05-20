@@ -113,12 +113,12 @@ const editStatusPostingan = (idPostingan, status) => {
   return conn.execute(SQLQuery, [status, idPostingan]);
 };
 
-const getDetailPelamar = (idPelamar) => {
+const getDetailPelamar = (idLamaranPekerjaan) => {
   const SQLQuery = `
     SELECT 
         pelamar.profile_pict AS foto_pelamar,
         melamar_pekerjaan.status AS status_lamaran,
-            melamar_pekerjaan.id_lamaran_pekerjaan AS id_lamaran_pekerjaan,
+        melamar_pekerjaan.id_lamaran_pekerjaan AS id_lamaran_pekerjaan,
         pelamar.first_name AS nama_depan,
         pelamar.last_name AS nama_belakang,
         posting_pekerjaan.posisi AS posisi_dilamar,
@@ -130,11 +130,12 @@ const getDetailPelamar = (idPelamar) => {
     JOIN 
         posting_pekerjaan ON melamar_pekerjaan.id_post_pekerjaan = posting_pekerjaan.id_post_pekerjaan
     WHERE 
-        pelamar.id_pelamar = ?;
+        melamar_pekerjaan.id_lamaran_pekerjaan = ?;
   `;
 
-  return conn.execute(SQLQuery, [idPelamar]);
+  return conn.execute(SQLQuery, [idLamaranPekerjaan]);
 };
+
 
 module.exports = {
   getAllPostByIDPerusahaan,

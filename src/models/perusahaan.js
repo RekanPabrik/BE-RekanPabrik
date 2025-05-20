@@ -106,30 +106,31 @@ const updateDataPerusahaan = async (
 const cekPelamar = async (idPerusahaan) => {
   const SQLQuery = `
     SELECT 
-    p.nama_perusahaan, 
-    pel.id_pelamar, 
-    pel.first_name, 
-    pel.last_name, 
-    pel.email, 
-    pel.profile_pict AS foto_profil, 
-    pel.curriculum_vitae AS link_cv, 
-    mp.status AS status_lamaran, 
-    pp.posisi AS posisi_dilamar
-FROM 
-    perusahaan p
-JOIN 
-    posting_pekerjaan pp ON pp.id_perusahaan = p.id_perusahaan
-JOIN 
-    melamar_pekerjaan mp ON mp.id_post_pekerjaan = pp.id_post_pekerjaan
-JOIN 
-    pelamar pel ON pel.id_pelamar = mp.id_pelamar
-WHERE 
-    p.id_perusahaan = ?;
-
-
+      p.nama_perusahaan, 
+      pel.id_pelamar, 
+      pel.first_name, 
+      pel.last_name, 
+      pel.email, 
+      pel.profile_pict AS foto_profil, 
+      pel.curriculum_vitae AS link_cv, 
+      mp.id_lamaran_pekerjaan,  -- <== Tambahkan koma di akhir sini
+      mp.status AS status_lamaran, 
+      pp.posisi AS posisi_dilamar
+    FROM 
+      perusahaan p
+    JOIN 
+      posting_pekerjaan pp ON pp.id_perusahaan = p.id_perusahaan
+    JOIN 
+      melamar_pekerjaan mp ON mp.id_post_pekerjaan = pp.id_post_pekerjaan
+    JOIN 
+      pelamar pel ON pel.id_pelamar = mp.id_pelamar
+    WHERE 
+      p.id_perusahaan = ?;
   `;
+
   return conn.execute(SQLQuery, [idPerusahaan]);
 };
+
 
 const deletePerusahaan = async (id) => {
   const SQLQuery = "DELETE FROM perusahaan WHERE id_perusahaan = ?";
