@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Run tests
-        id: test
+        id: test                         
         run: npm test
 
       - name: Upload coverage report (optional)
@@ -35,4 +35,5 @@ jobs:
           name: coverage-report
           path: coverage/
           name: Run tests
+
 
