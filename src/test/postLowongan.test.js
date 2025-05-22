@@ -2,6 +2,12 @@ const request = require("supertest");
 const app = require("../index");
 const jwt = require("jsonwebtoken");
 
+// Pastikan NODE_ENV 'test' agar middleware bisa di-bypass (jika kamu mengatur begitu)
+process.env.NODE_ENV = "test";
+
+// Ambil secret dari environment (atau fallback 'secret')
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
+
 // mock model
 jest.mock("../models/postingPekerjaan", () => ({
   addPostPekerjaan: jest.fn(),
@@ -12,7 +18,7 @@ const postPekerjaanModel = require("../models/postingPekerjaan");
 // buat token dummy
 const token = jwt.sign(
   { id: 1, role: "perusahaan" },
-  process.env.JWT_SECRET || "secret",
+  JWT_SECRET,
   { expiresIn: "1h" }
 );
 
