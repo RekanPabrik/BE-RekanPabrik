@@ -8,11 +8,13 @@ jest.mock("../models/savedJobs", () => ({
 
 const savedJobsModel = require("../models/savedJobs");
 
+process.env.NODE_ENV = "test";
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
+
 describe("melakukan simpan pekerjaan oleh user", () => {
-  // buat token palsu
   const token = jwt.sign(
-    { id: 1, role: "pelamar" }, // payload
-    process.env.JWT_SECRET || "secret", // secret
+    { id: 1, role: "pelamar" }, 
+    JWT_SECRET,
     { expiresIn: "1h" }
   );
 
