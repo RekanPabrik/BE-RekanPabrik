@@ -40,12 +40,4 @@ app.use("/postPekerjaan", verifyJWT, postingPekerjaanRoute);
 app.use("/melamarPekerjaan", verifyJWT, melamarRoute);
 app.use("/saveJobs", verifyJWT, savedJobsRoute);
 
-app.listen(PORT, () => {
-  console.log(`
-    ## MAIN ROUTE
-    -listening at http://localhost:${PORT}
-    
-    ## SWEGGER ROUTE
-    -Dokumentasi Swagger tersedia di http://localhost:${PORT}/api-docs
-    `);
-});
+module.exports = app;
