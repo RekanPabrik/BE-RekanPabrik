@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const request = require("supertest");
-const app = require("../index");
+const app = require("../app");
 
 jest.mock("../models/savedJobs", () => ({
   simpanPekerjaan: jest.fn()

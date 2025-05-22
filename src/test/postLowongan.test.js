@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../index");
+const app = require("../app");
 const jwt = require("jsonwebtoken");
 
 // Pastikan NODE_ENV 'test' agar middleware bisa di-bypass (jika kamu mengatur begitu)
