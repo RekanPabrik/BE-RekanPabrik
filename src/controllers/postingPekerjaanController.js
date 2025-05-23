@@ -64,7 +64,7 @@ const getPostinganByIdPostPekerjaan = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error saat mengambil data",
-      serverMessage: error,
+      serverMessage: error.message,
     });
   }
 };
