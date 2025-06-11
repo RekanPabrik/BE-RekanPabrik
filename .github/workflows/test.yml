@@ -1,4 +1,4 @@
-name: Express Testing in Github Action
+name: Express Jest Testing in Github Action
 
 on:
   push:
