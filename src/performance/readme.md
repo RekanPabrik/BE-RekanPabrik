@@ -26,6 +26,6 @@ npm install -g k6
 cd src/performance
 ```
 ```bash
-k6 run --env BASE_URL=<your API> <file yang di test>
+k6 run src/performance/<file yang di test> --env BASE_URL=<your API> --env K6_EMAIL=<your dummy EMAIL> --env K6_PASSWORD=<your dummy PASSWORD>
 ```
 

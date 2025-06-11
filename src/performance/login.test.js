@@ -20,8 +20,8 @@ export default function () {
   const url = baseUrl + endpoint;
 
   const payload = JSON.stringify({
-    email: 'rafif.purnomo@gmail.com',
-    password: 'rafif234',
+    email: __ENV.K6_EMAIL,
+    password: __ENV.K6_PASSWORD,
   });
 
   const params = {

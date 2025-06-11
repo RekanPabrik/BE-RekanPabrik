@@ -6,8 +6,6 @@
   "scripts": {
     "start": "nodemon ./src/index.js",
     "test": "jest ./src/test",
-    "performance:login": "k6 run src/performance/login.test.js",
-    "performance:getPostingan": "k6 run src/performance/getPostinganPekerjaan.test.js",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage"
   },
