@@ -23,6 +23,7 @@
 [![NPM Install Size][npm-install-size-image]][npm-install-size-url]
 [![NPM Downloads][npm-downloads-image]][npm-downloads-url]
 [![OpenSSF Scorecard Badge][ossf-scorecard-badge]][ossf-scorecard-visualizer]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rekanpabrik_be-rekanpabrik&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rekanpabrik_be-rekanpabrik)
 
 
 ```js
